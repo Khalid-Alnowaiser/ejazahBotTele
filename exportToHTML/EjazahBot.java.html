@@ -1,0 +1,108 @@
+<html>
+<head>
+<title>EjazahBot.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #6897bb;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+EjazahBot.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">org.telegram.telegrambots.bots.TelegramLongPollingBot</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.telegram.telegrambots.meta.api.methods.send.SendMessage</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.telegram.telegrambots.meta.api.objects.Message</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.telegram.telegrambots.meta.api.objects.Update</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.telegram.telegrambots.meta.exceptions.TelegramApiException</span><span class="s0">;</span>
+
+
+<span class="s0">import </span><span class="s1">java.time.LocalDate</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.time.Month</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.time.Period</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.time.ZoneId</span><span class="s0">;</span>
+
+
+<span class="s0">public class </span><span class="s1">EjazahBot </span><span class="s0">extends </span><span class="s1">TelegramLongPollingBot {</span>
+    <span class="s1">Boolean holiday = </span><span class="s0">false;</span>
+
+
+    <span class="s0">public void </span><span class="s1">onUpdateReceived(Update update) {</span>
+        <span class="s1">Message message = update.getMessage()</span><span class="s0">;</span>
+        <span class="s1">String messageContent = message.getText()</span><span class="s0">;</span>
+        <span class="s1">String userName = message.getFrom().getUserName()</span><span class="s0">;</span>
+        <span class="s1">String chatID = message.getChatId().toString()</span><span class="s0">;</span>
+        <span class="s1">System.out.println(</span><span class="s2">&quot;Message Content: &quot; </span><span class="s1">+ messageContent + </span><span class="s2">&quot; Sender username: @&quot; </span><span class="s1">+ userName)</span><span class="s0">;</span>
+        <span class="s1">LocalDate nowGMT3 = LocalDate.now(ZoneId.of(</span><span class="s2">&quot;Asia/Riyadh&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">SendMessage snd = </span><span class="s0">new </span><span class="s1">SendMessage()</span><span class="s0">;</span>
+        <span class="s1">snd.setChatId(chatID)</span><span class="s0">;</span>
+        <span class="s1">snd.setReplyToMessageId(message.getMessageId())</span><span class="s0">;</span>
+        <span class="s1">LocalDate[] vacations = </span><span class="s0">new </span><span class="s1">LocalDate[</span><span class="s3">4</span><span class="s1">]</span><span class="s0">;</span>
+        <span class="s1">vacations[</span><span class="s3">0</span><span class="s1">] = LocalDate.of(</span><span class="s3">2022</span><span class="s0">, </span><span class="s1">Month.APRIL</span><span class="s0">, </span><span class="s3">25</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">vacations[</span><span class="s3">1</span><span class="s1">] = LocalDate.of(</span><span class="s3">2022</span><span class="s0">, </span><span class="s1">Month.MAY</span><span class="s0">, </span><span class="s3">25</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">vacations[</span><span class="s3">2</span><span class="s1">] = LocalDate.of(</span><span class="s3">2022</span><span class="s0">, </span><span class="s3">6</span><span class="s0">, </span><span class="s3">16</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">vacations[</span><span class="s3">3</span><span class="s1">] = LocalDate.of(</span><span class="s3">2022</span><span class="s0">, </span><span class="s3">06</span><span class="s0">, </span><span class="s3">30</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">LocalDate startOfStudying = LocalDate.of(</span><span class="s3">2022</span><span class="s0">, </span><span class="s1">Month.MAY</span><span class="s0">, </span><span class="s3">8</span><span class="s1">)</span><span class="s0">;</span>
+
+
+        <span class="s0">int </span><span class="s1">vacCounter = </span><span class="s3">0</span><span class="s0">;</span>
+        <span class="s1">String output = </span><span class="s2">&quot;error&quot;</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(message.getText().equals(</span><span class="s2">&quot;اجازة&quot;</span><span class="s1">)) {</span>
+            <span class="s0">if </span><span class="s1">(!holiday) {</span>
+                <span class="s0">int </span><span class="s1">remainingDays = Period.between(nowGMT3</span><span class="s0">, </span><span class="s1">vacations[vacCounter]).getDays()</span><span class="s0">;</span>
+                <span class="s0">if </span><span class="s1">(remainingDays &lt; </span><span class="s3">0</span><span class="s1">) {</span>
+                    <span class="s0">while </span><span class="s1">(remainingDays &lt; </span><span class="s3">0</span><span class="s1">) {</span>
+                        <span class="s1">vacCounter++</span><span class="s0">;</span>
+                        <span class="s1">remainingDays = Period.between(nowGMT3</span><span class="s0">, </span><span class="s1">vacations[vacCounter]).getDays()</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+                <span class="s0">if </span><span class="s1">(!holiday) {</span>
+                    <span class="s1">output = </span><span class="s2">&quot;باقي &quot; </span><span class="s1">+ remainingDays + </span><span class="s2">&quot; يوم على بداية الاجازة&quot;</span><span class="s0">;</span>
+                <span class="s1">}</span>
+
+
+            <span class="s1">}</span>
+            <span class="s0">if </span><span class="s1">(holiday) {</span>
+                <span class="s0">int </span><span class="s1">remainingDays = Period.between(nowGMT3</span><span class="s0">, </span><span class="s1">startOfStudying).getDays()</span><span class="s0">;</span>
+                <span class="s0">if </span><span class="s1">(remainingDays &lt; </span><span class="s3">0</span><span class="s1">) {</span>
+                    <span class="s1">holiday = </span><span class="s0">true;</span>
+                <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                    <span class="s1">output = </span><span class="s2">&quot;باقي &quot; </span><span class="s1">+ remainingDays + </span><span class="s2">&quot; يوم على بداية الدراسة&quot;</span><span class="s0">;</span>
+                <span class="s1">}</span>
+
+            <span class="s1">}</span>
+
+
+            <span class="s1">snd.setText(output)</span><span class="s0">;</span>
+            <span class="s0">try </span><span class="s1">{</span>
+                <span class="s1">execute(snd)</span><span class="s0">;</span>
+            <span class="s1">} </span><span class="s0">catch </span><span class="s1">(TelegramApiException e) {</span>
+                <span class="s1">e.printStackTrace()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+
+
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">String getBotUsername() {</span>
+        <span class="s4">// TODO</span>
+        <span class="s0">return </span><span class="s2">&quot;Ejazahbot&quot;</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">String getBotToken() {</span>
+        <span class="s4">// TODO</span>
+        <span class="s0">return </span><span class="s2">&quot;5306618409:AAFSPcoL72DnF60F_KKuRPIRMcfkRDEuIFc&quot;</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+
+</pre>
+</body>
+</html>
