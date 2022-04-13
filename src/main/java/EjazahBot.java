@@ -75,13 +75,13 @@ public class EjazahBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         // TODO
-        return "Ejazahbot";
+        return "botUserName";
     }
 
     @Override
     public String getBotToken() {
         // TODO
-        return "5306618409:AAFSPcoL72DnF60F_KKuRPIRMcfkRDEuIFc";
+        return "botToken";
     }
 }
 
